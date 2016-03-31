@@ -1,4 +1,21 @@
-gdoc <- function(template = "template.docx", token = google_token, keep_md = FALSE, clean_supporting=TRUE, verbose = TRUE, browse = TRUE) {
+client_id <-
+  "768463239017-5artdq2jvia96u5r318a3a3u9mpobdm3.apps.googleusercontent.com"
+client_secret <- "YH4lh5tlKhktj9xJj5Zv_XD3"
+
+scope_list <- c("https://www.googleapis.com/auth/drive",
+                "https://www.googleapis.com/auth/script.storage")
+script_app <- httr::oauth_app("google", key = client_id, secret = client_secret)
+google_token <-
+  httr::oauth2.0_token(httr::oauth_endpoints("google"),
+                       script_app, scope = scope_list, cache = TRUE)
+
+#' @export
+#' @import httr jsonlite rmarkdown
+gdoc <- function(template = NULL, token = google_token, keep_md = FALSE, clean_supporting=TRUE, verbose = TRUE, browse = TRUE) {
+
+  if(is.null(template)) {
+    template = system.file("template.docx", package="googlestuff")
+  }
   output_format(
     knitr = knitr_options(),
     pandoc = pandoc_options(to = "docx"),
@@ -11,12 +28,13 @@ gdoc <- function(template = "template.docx", token = google_token, keep_md = FAL
         title = metadata$title
       }
       the_body <- list(title = title,
-                       mimeType = "application/vnd.google-document")
+                       mimeType = "application/vnd.google-apps.document")
       req <- httr::POST("https://www.googleapis.com/drive/v2/files",
                         httr::config(token = google_token),
                         body = the_body, encode = "json")
       rc <- jsonlite::fromJSON(httr::content(req, as = "text", encoding = "UTF-8"))
       file_id <- rc$id
+
 
       the_url <-
         file.path("https://www.googleapis.com/upload/drive/v2/files", file_id)
@@ -27,9 +45,13 @@ gdoc <- function(template = "template.docx", token = google_token, keep_md = FAL
                        httr::config(token = google_token),
                        body = httr::upload_file(output_file))
       rc <- jsonlite::fromJSON(httr::content(req, as = "text", encoding = "UTF-8"))
-      rc
-      message(rc$alternateLink)
-      if(browse) browseURL(rc$alternateLink)
+
+
+
+
+      editURL = file.path("https://docs.google.com/document/d", rc$id, "edit")
+      if(browse) browseURL(editURL)
+      message(editURL)
       # file_id_or_url = upload_to_gdrive (output_file)
       # result  = attach_property(file_id_or_url, readChar(input_file, file.info(input_file)$size)
       return(output_file)

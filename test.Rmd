@@ -1,6 +1,6 @@
 ---
 title: "A Test Document"
-output: word_document
+output: googlestuff::gdoc
 ---
 
 ```{r setup, include=FALSE}
