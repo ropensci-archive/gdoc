@@ -11,10 +11,19 @@ google_token <-
 ## now drop this into any future httr calls:
 ## httr::config(token = google_token)
 
-## JENNY just proving we can now push a Google Doc
+## JENNY just proving we can now push a rendered Rmd as Google Doc
+
 ## upload metadata --> get a fileId (Drive-speak)
+
+## DO THIS MANUALLY
+## RStudio > File > New File > R Markdown
+## select word doc, I guess? I'd prefer to not specify output_format
+## and save it as "test.Rmd"
+
 local_rmd_file <- "test.Rmd"
-local_rendered_file <- rmarkdown::render(local_rmd_file)
+## we'll replace "word_document" with "google_document" here
+local_rendered_file <-
+  rmarkdown::render(local_rmd_file, output_format = "word_document")
 
 the_body <- list(title = "test",
                  mimeType = "application/vnd.google-document")
