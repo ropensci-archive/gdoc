@@ -7,7 +7,8 @@ Depends:
     R (>= 3.2.3)
 License: What license is it under?
 LazyData: true
-Imports: httr,
-         jsonlite,
-         rmarkdown
-RoxygenNote: 5.0.1
+Imports:
+    httr,
+    jsonlite,
+    rmarkdown
+RoxygenNote: 5.0.1.9000

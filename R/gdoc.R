@@ -1,20 +1,29 @@
-client_id <-
+.app <- new.env(parent = emptyenv())
+.app$client_id <-
   "768463239017-5artdq2jvia96u5r318a3a3u9mpobdm3.apps.googleusercontent.com"
-client_secret <- "YH4lh5tlKhktj9xJj5Zv_XD3"
-
-scope_list <- c("https://www.googleapis.com/auth/drive",
-                "https://www.googleapis.com/auth/script.storage")
-script_app <- httr::oauth_app("google", key = client_id, secret = client_secret)
-google_token <-
-  httr::oauth2.0_token(httr::oauth_endpoints("google"),
-                       script_app, scope = scope_list, cache = TRUE)
+.app$client_secret <- "YH4lh5tlKhktj9xJj5Zv_XD3"
+.app$scopes <- c("https://www.googleapis.com/auth/drive",
+                 "https://www.googleapis.com/auth/documents",
+                 "https://www.googleapis.com/auth/script.storage")
+.app$app <- httr::oauth_app("google", key = .app$client_id,
+                            secret = .app$client_secret)
+#' @export
+gd_auth <- function() {
+  invisible(httr::oauth2.0_token(httr::oauth_endpoints("google"),
+                                 .app$app, scope = .app$scopes, cache = TRUE))
+}
 
 #' @export
 #' @import httr jsonlite rmarkdown
-gdoc <- function(template = NULL, token = google_token, keep_md = FALSE, clean_supporting=TRUE, verbose = TRUE, browse = TRUE) {
+gdoc <- function(template = NULL, token = NULL,
+                 keep_md = FALSE, clean_supporting = TRUE,
+                 verbose = TRUE, browse = TRUE) {
 
-  if(is.null(template)) {
-    template = system.file("template.docx", package="googlestuff")
+  if (is.null(token)) {
+    token <- gd_auth()
+  }
+  if (is.null(template)) {
+    template = system.file("template.docx", package = "googlestuff")
   }
   output_format(
     knitr = knitr_options(),
@@ -22,7 +31,7 @@ gdoc <- function(template = NULL, token = google_token, keep_md = FALSE, clean_s
     keep_md = keep_md,
     clean_supporting = clean_supporting,
     post_processor = function(metadata, input_file, output_file, clean, verbose) {
-      if(is.null(metadata$title)) {
+      if (is.null(metadata$title)) {
         title = "Test"
       } else {
         title = metadata$title
@@ -30,11 +39,10 @@ gdoc <- function(template = NULL, token = google_token, keep_md = FALSE, clean_s
       the_body <- list(title = title,
                        mimeType = "application/vnd.google-apps.document")
       req <- httr::POST("https://www.googleapis.com/drive/v2/files",
-                        httr::config(token = google_token),
+                        httr::config(token = token),
                         body = the_body, encode = "json")
       rc <- jsonlite::fromJSON(httr::content(req, as = "text", encoding = "UTF-8"))
       file_id <- rc$id
-
 
       the_url <-
         file.path("https://www.googleapis.com/upload/drive/v2/files", file_id)
@@ -42,20 +50,17 @@ gdoc <- function(template = NULL, token = google_token, keep_md = FALSE, clean_s
         httr::modify_url(the_url,
                          query = list(uploadType = "media", convert = TRUE))
       req <- httr::PUT(the_url,
-                       httr::config(token = google_token),
+                       httr::config(token = token),
                        body = httr::upload_file(output_file))
       rc <- jsonlite::fromJSON(httr::content(req, as = "text", encoding = "UTF-8"))
 
-
-
-
-      editURL = file.path("https://docs.google.com/document/d", rc$id, "edit")
+      editURL <- file.path("https://docs.google.com/document/d", rc$id, "edit")
       if(browse) browseURL(editURL)
       message(editURL)
       # file_id_or_url = upload_to_gdrive (output_file)
       # result  = attach_property(file_id_or_url, readChar(input_file, file.info(input_file)$size)
       return(output_file)
     },
-    base_format  = word_document(reference_docx = template)
+    base_format = word_document(reference_docx = template)
   )
 }
