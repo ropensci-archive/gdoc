@@ -35,7 +35,9 @@ req <- httr::PUT(the_url,
                  body = httr::upload_file(local_rendered_file))
 rc <- jsonlite::fromJSON(httr::content(req, as = "text", encoding = "UTF-8"))
 rc
+## this is a suboptimal URL ... working on that
 browseURL(rc$alternateLink)
+
 
 ## render a local Rmd
 ##   * it has a novel document type in the YAML
