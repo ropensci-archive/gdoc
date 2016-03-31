@@ -60,5 +60,39 @@ browseURL(rc$alternateLink)
 ## via Google Apps script + Execution API
 ## attach the Rmd to the rendered Doc as a ?custom document property?
 
+## App Script
+# function saveRMarkdown(file_id, raw_r_markdown) {
+#   var property = {
+#     key: "raw_r_markdown",
+#     value: raw_r_markdown,
+#     visibility: "PUBLIC"
+#   };
+#
+#   Drive.Properties.insert(property, file_id);
+#   return "yay!!!"
+# }
+
+client_id = "768463239017-5artdq2jvia96u5r318a3a3u9mpobdm3.apps.googleusercontent.com"
+client_secret = "YH4lh5tlKhktj9xJj5Zv_XD3"
+
+scope_list =c("https://www.googleapis.com/auth/drive", "https://www.googleapis.com/auth/script.storage")
+script_app = httr::oauth_app("google", key=client_id, secret=client_secret)
+script_google_token = httr::oauth2.0_token(httr::oauth_endpoints("google"), script_app, scope=scope_list, cache=TRUE)
+
+script_id = "MlxF1pCyK3ROzBb-Mg-r-u5OP2w2mNFlH"
+script_url = paste0("https://script.googleapis.com/v1/scripts/", script_id, ":run")
+
+file_name = "test.Rmd"
+raw_text = readChar(file_name, file.info(file_name)$size)
+
+body = list(
+  "function"="saveRMarkdown",
+  parameters=c(file_id, raw_text)
+)
+
+req = httr::POST(script_url, httr::config(token=script_google_token), body=body, encode="json")
+rc = jsonlite::fromJSON(httr::content(req, as="text", encoding="UTF-8"))
+rc
+
 ## retrieve the rendered Doc
 ## read custom document property = the Rmd source
