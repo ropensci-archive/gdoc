@@ -32,7 +32,7 @@ the_url <-
                    query = list(uploadType = "media", convert = TRUE))
 req <- httr::PUT(the_url,
                  httr::config(token = google_token),
-                 body = httr::upload_file(local_file))
+                 body = httr::upload_file(local_rendered_file))
 rc <- jsonlite::fromJSON(httr::content(req, as = "text", encoding = "UTF-8"))
 rc
 browseURL(rc$alternateLink)
