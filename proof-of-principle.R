@@ -13,7 +13,8 @@ google_token <-
 
 ## JENNY just proving we can now push a Google Doc
 ## upload metadata --> get a fileId (Drive-speak)
-local_file <- "test.docx"
+local_rmd_file <- "test.Rmd"
+local_rendered_file <- rmarkdown::render(local_rmd_file)
 
 the_body <- list(title = "test",
                  mimeType = "application/vnd.google-document")
