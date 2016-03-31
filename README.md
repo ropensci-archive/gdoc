@@ -8,6 +8,8 @@ Existing pieces of the (Google Drive) ecosystem
   * [`googlesheets`](https://github.com/jennybc/googlesheets), [`driver`](https://github.com/noamross/driver)
   * [`gauth`](https://github.com/ropenscilabs/gauth)
   * [`rchie`](https://github.com/ropensci/rchie)
+  * [`stackedit`](https://stackedit.io/editor)
+  * [`.gdoc Structure Viewer`](http://www.lorut.no/apps/gdoc-structure-viewer)
 
 Goals
 
