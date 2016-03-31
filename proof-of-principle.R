@@ -2,12 +2,26 @@ client_id <-
   "768463239017-5artdq2jvia96u5r318a3a3u9mpobdm3.apps.googleusercontent.com"
 client_secret <- "YH4lh5tlKhktj9xJj5Zv_XD3"
 
-scope_list <- c("https://www.googleapis.com/auth/drive",
-                "https://www.googleapis.com/auth/script.storage")
+scope_list <- c(
+  "https://www.googleapis.com/auth/drive",
+  "https://www.googleapis.com/auth/script.storage",
+  "https://www.googleapis.com/auth/documents"
+)
 script_app <- httr::oauth_app("google", key = client_id, secret = client_secret)
 google_token <-
   httr::oauth2.0_token(httr::oauth_endpoints("google"),
                        script_app, scope = scope_list, cache = TRUE)
+
+script_app = httr::oauth_app("google", key=client_id, secret=client_secret)
+google_token = httr::oauth2.0_token(httr::oauth_endpoints("google"), script_app, scope=scope_list, cache=TRUE)
+
+## now drop this into any future httr calls:
+## httr::config(token = google_token)
+
+## JENNY just proving we can now push a rendered Rmd as Google Doc
+
+## upload metadata --> get a fileId (Drive-speak)
+Write the raw text as a paragraph in the doc
 
 ## DO THIS MANUALLY
 ## RStudio > File > New File > R Markdown
@@ -63,6 +77,20 @@ raw_text = readChar(file_name, file.info(file_name)$size)
 body = list(
   "function"="saveRMarkdown",
   parameters=c(file_id, raw_text)
+)
+
+req = httr::POST(script_url, httr::config(token=google_token), body=body, encode="json")
+rc = jsonlite::fromJSON(httr::content(req, as="text", encoding="UTF-8"))
+rc
+
+## Write raw markdown text to doc
+## You have to go manually create the google doc by clicking "open"
+## Grab the document id from the URL
+document_id = "1s7YMRp1r1F2Fmjsr-tji2FodeThnDdboWt4OU7DGByw"
+
+body = list(
+ "function"="updateDocument",
+ parameters = c(document_id, raw_text)
 )
 
 req = httr::POST(script_url, httr::config(token=google_token), body=body, encode="json")
