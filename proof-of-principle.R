@@ -1,16 +1,13 @@
-client_id = "768463239017-5artdq2jvia96u5r318a3a3u9mpobdm3.apps.googleusercontent.com"
-client_secret = "YH4lh5tlKhktj9xJj5Zv_XD3"
+client_id <-
+  "768463239017-5artdq2jvia96u5r318a3a3u9mpobdm3.apps.googleusercontent.com"
+client_secret <- "YH4lh5tlKhktj9xJj5Zv_XD3"
 
-scope_list = c("https://www.googleapis.com/auth/drive", "https://www.googleapis.com/auth/script.storage")
-script_app = httr::oauth_app("google", key=client_id, secret=client_secret)
-google_token = httr::oauth2.0_token(httr::oauth_endpoints("google"), script_app, scope=scope_list, cache=TRUE)
-
-## now drop this into any future httr calls:
-## httr::config(token = google_token)
-
-## JENNY just proving we can now push a rendered Rmd as Google Doc
-
-## upload metadata --> get a fileId (Drive-speak)
+scope_list <- c("https://www.googleapis.com/auth/drive",
+                "https://www.googleapis.com/auth/script.storage")
+script_app <- httr::oauth_app("google", key = client_id, secret = client_secret)
+google_token <-
+  httr::oauth2.0_token(httr::oauth_endpoints("google"),
+                       script_app, scope = scope_list, cache = TRUE)
 
 ## DO THIS MANUALLY
 ## RStudio > File > New File > R Markdown
@@ -23,7 +20,7 @@ local_rendered_file <-
   rmarkdown::render(local_rmd_file, output_format = "word_document")
 
 the_body <- list(title = "test",
-                 mimeType = "application/vnd.google-document")
+                 mimeType = "application/vnd.google-apps.document")
 req <- httr::POST("https://www.googleapis.com/drive/v2/files",
                   httr::config(token = google_token),
                   body = the_body, encode = "json")
@@ -41,18 +38,7 @@ req <- httr::PUT(the_url,
                  body = httr::upload_file(local_rendered_file))
 rc <- jsonlite::fromJSON(httr::content(req, as = "text", encoding = "UTF-8"))
 rc
-## this is a suboptimal URL ... working on that
-browseURL(rc$alternateLink)
-
-
-## render a local Rmd
-##   * it has a novel document type in the YAML
-##   * leaves behind a rendered version
-
-## upload the rendered version to Drive as Google Doc
-## get a Drive fileId back
-
-
+browseURL(file.path("https://docs.google.com/document/d", rc$id, "edit"))
 
 ## via Google Apps script + Execution API
 ## attach the Rmd to the rendered Doc as a ?custom document property?
