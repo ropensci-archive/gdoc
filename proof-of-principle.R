@@ -1,12 +1,9 @@
-scope_list <- c("https://www.googleapis.com/auth/drive",
-                "https://www.googleapis.com/auth/script.storage")
-key <-
-  "178989665258-f4scmimctv2o96isfppehg1qesrpvjro.apps.googleusercontent.com"
-secret <- "iWPrYg0lFHNQblnRrDbypvJL"
-googlestuff_app <- httr::oauth_app("google", key = key, secret = secret)
-google_token <-
-  httr::oauth2.0_token(httr::oauth_endpoints("google"), googlestuff_app,
-                       scope = scope_list, cache = TRUE)
+client_id = "768463239017-5artdq2jvia96u5r318a3a3u9mpobdm3.apps.googleusercontent.com"
+client_secret = "YH4lh5tlKhktj9xJj5Zv_XD3"
+
+scope_list = c("https://www.googleapis.com/auth/drive", "https://www.googleapis.com/auth/script.storage")
+script_app = httr::oauth_app("google", key=client_id, secret=client_secret)
+google_token = httr::oauth2.0_token(httr::oauth_endpoints("google"), script_app, scope=scope_list, cache=TRUE)
 
 ## now drop this into any future httr calls:
 ## httr::config(token = google_token)
@@ -71,14 +68,6 @@ browseURL(rc$alternateLink)
 #   Drive.Properties.insert(property, file_id);
 #   return "yay!!!"
 # }
-
-client_id = "768463239017-5artdq2jvia96u5r318a3a3u9mpobdm3.apps.googleusercontent.com"
-client_secret = "YH4lh5tlKhktj9xJj5Zv_XD3"
-
-scope_list =c("https://www.googleapis.com/auth/drive", "https://www.googleapis.com/auth/script.storage")
-script_app = httr::oauth_app("google", key=client_id, secret=client_secret)
-script_google_token = httr::oauth2.0_token(httr::oauth_endpoints("google"), script_app, scope=scope_list, cache=TRUE)
-
 script_id = "MlxF1pCyK3ROzBb-Mg-r-u5OP2w2mNFlH"
 script_url = paste0("https://script.googleapis.com/v1/scripts/", script_id, ":run")
 
@@ -90,7 +79,7 @@ body = list(
   parameters=c(file_id, raw_text)
 )
 
-req = httr::POST(script_url, httr::config(token=script_google_token), body=body, encode="json")
+req = httr::POST(script_url, httr::config(token=google_token), body=body, encode="json")
 rc = jsonlite::fromJSON(httr::content(req, as="text", encoding="UTF-8"))
 rc
 
