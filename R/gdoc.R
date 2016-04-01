@@ -61,11 +61,12 @@ gdoc <- function(template = NULL, token = gd_auth(),
       title = metadata$title
     }
 
-    if (is.null(metadata$gdoc_id)) {
-      req <- doc_init(output_file, token)
-    } else {
-      req <- doc_update(metadata$gdoc_id, output_file, token)
-    }
+ #   if (is.null(metadata$gdoc_id)) {
+      req <- doc_init(output_file, token, title)
+#    } else {
+#      req <- doc_update(metadata$gdoc_id, output_file, token)
+#    }
+    httr::stop_for_status(req)
     rc <- jsonlite::fromJSON(httr::content(req, as = "text", encoding = "UTF-8"))
 
     input_file_orig = stringi::stri_replace_all_fixed(input_file, "utf8.md", "Rmd")
@@ -98,7 +99,7 @@ gdoc <- function(template = NULL, token = gd_auth(),
   )
 }
 
-doc_init <- function(output_file, token) {
+doc_init <- function(output_file, token, title) {
   the_body <- list(title = title,
                    mimeType = "application/vnd.google-apps.document")
   req <- httr::POST("https://www.googleapis.com/drive/v2/files",
