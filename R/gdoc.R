@@ -13,6 +13,19 @@ gd_auth <- function() {
                                  .app$app, scope = .app$scopes, cache = TRUE))
 }
 
+#' Get an R Markdown document for practice
+#'
+#'@examples{
+#' my_rmd <- gtemplate()
+#' rmarkdown::render(my_rmd)
+#'}
+#' @export
+gtemplate <- function(filename = "test.Rmd") {
+  template_file <- system.file("test.Rmd", package = "googlestuff")
+  file.copy(template_file, filename)
+  filename
+}
+
 #' @export
 #' @import httr jsonlite rmarkdown
 gdoc <- function(template = NULL, token = NULL,
