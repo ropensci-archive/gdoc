@@ -1,0 +1,20 @@
+---
+title: "R Markdown to Google Doc"
+output: googlestuff::gdoc
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+This is A Google Doc that is generated from an  R Markdown document.
+
+```{r cars}
+summary(cars)
+```
+
+You can also embed plots, for example:
+
+```{r pressure, echo = FALSE, fig.height = 5}
+plot(pressure)
+```

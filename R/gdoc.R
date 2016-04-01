@@ -42,6 +42,7 @@ gd_auth <- function() {
 #' @export
 gtemplate <- function(filename = "test.Rmd") {
   template_file <- system.file("rmarkdown", "templates", "gdoc", "skeleton", "test.Rmd", package = "gdoc")
+  template_file <- system.file("test.Rmd", package = "gdoc")
   file.copy(template_file, filename)
   filename
 }
