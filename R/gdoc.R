@@ -7,6 +7,13 @@
                  "https://www.googleapis.com/auth/script.storage")
 .app$app <- httr::oauth_app("google", key = .app$client_id,
                             secret = .app$client_secret)
+
+#' Get a Google token
+#'
+#' @examples{
+#' gd_auth()
+#' }
+#'
 #' @export
 gd_auth <- function() {
   invisible(httr::oauth2.0_token(httr::oauth_endpoints("google"),
@@ -28,13 +35,10 @@ gtemplate <- function(filename = "test.Rmd") {
 
 #' @export
 #' @import httr jsonlite rmarkdown
-gdoc <- function(template = NULL, token = NULL,
+gdoc <- function(template = NULL, token = gd_auth(),
                  keep_md = FALSE, clean_supporting = TRUE,
                  verbose = TRUE, browse = TRUE) {
 
-  if (is.null(token)) {
-    token <- gd_auth()
-  }
   if (is.null(template)) {
     template = system.file("template.docx", package = "googlestuff")
   }
