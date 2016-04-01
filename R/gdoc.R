@@ -35,7 +35,7 @@ gtemplate <- function(filename = "test.Rmd") {
 }
 
 #' @export
-#' @import httr jsonlite rmarkdown
+#' @import httr jsonlite rmarkdown stringi
 gdoc <- function(template = NULL, token = gd_auth(),
                  keep_md = FALSE, clean_supporting = TRUE,
                  verbose = TRUE, browse = TRUE, upload_Rmd = FALSE) {
@@ -54,7 +54,7 @@ gdoc <- function(template = NULL, token = gd_auth(),
     the_body <- list(title = title,
                      mimeType = "application/vnd.google-apps.document")
     req <- httr::POST("https://www.googleapis.com/drive/v2/files",
-                      httr::config(token = google_token),
+                      httr::config(token = token),
                       body = the_body, encode = "json")
     rc <- jsonlite::fromJSON(httr::content(req, as = "text", encoding = "UTF-8"))
     file_id <- rc$id
@@ -66,19 +66,20 @@ gdoc <- function(template = NULL, token = gd_auth(),
       httr::modify_url(the_url,
                        query = list(uploadType = "media", convert = TRUE))
     req <- httr::PUT(the_url,
-                     httr::config(token = google_token),
+                     httr::config(token = token),
                      body = httr::upload_file(output_file))
     rc <- jsonlite::fromJSON(httr::content(req, as = "text", encoding = "UTF-8"))
 
-    document_body = rmarkdown:::partition_yaml_front_matter(readLines(input_file))$body
-    front_matter = rmarkdown:::parse_yaml_front_matter(readLines(input_file))
-    front_matter = c(front_matter, gdoc_id = rc$id)
+    input_file_orig = stringi::stri_replace_all_fixed(input_file, "utf8.md", "Rmd")
+    document_body = rmarkdown:::partition_yaml_front_matter(readLines(input_file_orig))$body
+    front_matter = rmarkdown:::parse_yaml_front_matter(readLines(input_file_orig))
+    front_matter$gdoc_id = rc$id
     front_matter = paste0("---\n",
                           yaml::as.yaml(front_matter),
-                          "---"
+                          "---\n"
     )
 
-    cat(front_matter, paste(document_body, collapse="\n"), file=input_file)
+    cat(front_matter, paste(document_body, collapse="\n"), file=input_file_orig)
     editURL = file.path("https://docs.google.com/document/d", rc$id, "edit")
     if(clean_supporting) file.remove(output_file)
     if(browse) browseURL(editURL)
