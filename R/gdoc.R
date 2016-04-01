@@ -51,42 +51,27 @@ gdoc <- function(template = NULL, token = gd_auth(),
     } else {
       title = metadata$title
     }
-    the_body <- list(title = title,
-                     mimeType = "application/vnd.google-apps.document")
-    req <- httr::POST("https://www.googleapis.com/drive/v2/files",
-                      httr::config(token = token),
-                      body = the_body, encode = "json")
-    rc <- jsonlite::fromJSON(httr::content(req, as = "text", encoding = "UTF-8"))
-    file_id <- rc$id
 
+  req <- doc_init(output_file token)
+  rc <- jsonlite::fromJSON(httr::content(req, as = "text", encoding = "UTF-8"))
 
-    the_url <-
-      file.path("https://www.googleapis.com/upload/drive/v2/files", file_id)
-    the_url <-
-      httr::modify_url(the_url,
-                       query = list(uploadType = "media", convert = TRUE))
-    req <- httr::PUT(the_url,
-                     httr::config(token = token),
-                     body = httr::upload_file(output_file))
-    rc <- jsonlite::fromJSON(httr::content(req, as = "text", encoding = "UTF-8"))
+  input_file_orig = stringi::stri_replace_all_fixed(input_file, "utf8.md", "Rmd")
+  document_body = rmarkdown:::partition_yaml_front_matter(readLines(input_file_orig))$body
+  front_matter = rmarkdown:::parse_yaml_front_matter(readLines(input_file_orig))
+  front_matter$gdoc_id = rc$id
+  front_matter = paste0("---\n",
+                        yaml::as.yaml(front_matter),
+                        "---\n"
+  )
 
-    input_file_orig = stringi::stri_replace_all_fixed(input_file, "utf8.md", "Rmd")
-    document_body = rmarkdown:::partition_yaml_front_matter(readLines(input_file_orig))$body
-    front_matter = rmarkdown:::parse_yaml_front_matter(readLines(input_file_orig))
-    front_matter$gdoc_id = rc$id
-    front_matter = paste0("---\n",
-                          yaml::as.yaml(front_matter),
-                          "---\n"
-    )
-
-    cat(front_matter, paste(document_body, collapse="\n"), file=input_file_orig)
-    editURL = file.path("https://docs.google.com/document/d", rc$id, "edit")
-    if(clean_supporting) file.remove(output_file)
-    if(browse) browseURL(editURL)
-    message(editURL)
-    # file_id_or_url = upload_to_gdrive (output_file)
-    # result  = attach_property(file_id_or_url, readChar(input_file, file.info(input_file)$size)
-    return(NULL)
+  cat(front_matter, paste(document_body, collapse="\n"), file=input_file_orig)
+  editURL = file.path("https://docs.google.com/document/d", rc$id, "edit")
+  if(clean_supporting) file.remove(output_file)
+  if(browse) browseURL(editURL)
+  message(editURL)
+  # file_id_or_url = upload_to_gdrive (output_file)
+  # result  = attach_property(file_id_or_url, readChar(input_file, file.info(input_file)$size)
+  return(NULL)
   }
 
   output_format(
@@ -99,5 +84,21 @@ gdoc <- function(template = NULL, token = gd_auth(),
   )
 }
 
+doc_init <- function(output_file, token) {
+  the_body <- list(title = title,
+                   mimeType = "application/vnd.google-apps.document")
+  req <- httr::POST("https://www.googleapis.com/drive/v2/files",
+                    httr::config(token = token),
+                    body = the_body, encode = "json")
+  rc <- jsonlite::fromJSON(httr::content(req, as = "text", encoding = "UTF-8"))
+  the_url <-
+    file.path("https://www.googleapis.com/upload/drive/v2/files", rc$id)
+  the_url <-
+    httr::modify_url(the_url,
+                     query = list(uploadType = "media", convert = TRUE))
+  httr::PUT(the_url,
+            httr::config(token = token),
+            body = httr::upload_file(output_file))
+}
 
 
