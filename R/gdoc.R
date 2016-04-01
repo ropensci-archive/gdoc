@@ -1,6 +1,7 @@
 .app <- new.env(parent = emptyenv())
 .app$client_id <-
   "768463239017-5artdq2jvia96u5r318a3a3u9mpobdm3.apps.googleusercontent.com"
+.app$script_id <- "MlxF1pCyK3ROzBb-Mg-r-u5OP2w2mNFlH"
 .app$client_secret <- "YH4lh5tlKhktj9xJj5Zv_XD3"
 .app$scopes <- c("https://www.googleapis.com/auth/drive",
                  "https://www.googleapis.com/auth/documents",
@@ -59,8 +60,21 @@ gdoc <- function(template = NULL, token = NULL,
       message(editURL)
       # file_id_or_url = upload_to_gdrive (output_file)
       # result  = attach_property(file_id_or_url, readChar(input_file, file.info(input_file)$size)
+      # save_r_markdown_as_gdoc(input_file, token)
       return(output_file)
     },
     base_format = word_document(reference_docx = template)
   )
+}
+
+save_r_markdown_as_gdoc = function(input_file, token) {
+  script_url = paste0("https://script.googleapis.com/v1/scripts/", .app$script_id, ":run")
+  raw_text = readChar(input_file, file.info(input_file)$size)
+
+  body = list(
+    "function"="saveRMarkdown",
+    parameters=c(file_id, raw_text)
+  )
+
+  invisible(httr::POST(script_url, httr::config(token=token), body=body, encode="json"))
 }
