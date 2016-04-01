@@ -1,6 +1,6 @@
 ---
 title: "R Markdown to Google Doc"
-output: googlestuff::gdoc
+output: gdoc::gdoc
 ---
 
 ```{r setup, include=FALSE}
