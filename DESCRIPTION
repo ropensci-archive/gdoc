@@ -18,3 +18,4 @@ Imports:
     rmarkdown,
     stringi,
     yaml
+RoxygenNote: 5.0.1
