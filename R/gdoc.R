@@ -34,11 +34,20 @@ gtemplate <- function(filename = "test.Rmd") {
   filename
 }
 
+
+
 #' @export
 #' @import httr jsonlite rmarkdown stringi
 gdoc <- function(template = NULL, token = gd_auth(),
                  keep_md = FALSE, clean_supporting = TRUE,
                  verbose = TRUE, browse = TRUE, upload_Rmd = FALSE) {
+
+
+  before_knit = function(x) {
+    message("Validating Token")
+    stopifnot(token$validate())
+    return(x)
+  }
 
 
   if (is.null(template)) {
@@ -71,15 +80,16 @@ gdoc <- function(template = NULL, token = gd_auth(),
     cat(front_matter, paste(document_body, collapse="\n"), file=input_file_orig)
     editURL = file.path("https://docs.google.com/document/d", rc$id, "edit")
     if(clean_supporting) file.remove(output_file)
-    if(browse) browseURL(editURL)
+    str(editURL)
     message(editURL)
+    if(browse) browseURL(editURL)
     # file_id_or_url = upload_to_gdrive (output_file)
     # result  = attach_property(file_id_or_url, readChar(input_file, file.info(input_file)$size)
     return(NULL)
   }
 
   output_format(
-    knitr = knitr_options(),
+    knitr = knitr_options(knit_hooks=list(document=before_knit)),
     pandoc = pandoc_options(to = "docx"),
     keep_md = keep_md,
     clean_supporting = clean_supporting,
