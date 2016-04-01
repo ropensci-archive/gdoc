@@ -47,12 +47,20 @@ gtemplate <- function(filename = "test.Rmd") {
 }
 
 
-
+#' Create a Google Doc from an R Markdown File
+#'
+#' @param template An MS word file with styles for your document.  NULL uses
+#' package defaults
+#' @param token Google Auth token. \code{\link{gd_auth}} will generate one by
+#' default
+#' @param keep_md Boolean.  Whether to retain the knit markdown file
+#' @param clean_supporting Boolean. Whether to keep other intermediate files,
+#' including the MS Word file.
+#'
 #' @export
 #' @import httr jsonlite rmarkdown stringi
 gdoc <- function(template = NULL, token = gd_auth(),
-                 keep_md = FALSE, clean_supporting = TRUE,
-                 verbose = TRUE, upload_Rmd = FALSE) {
+                 keep_md = FALSE, clean_supporting = TRUE) {
 
 
   before_knit = function(x) {
