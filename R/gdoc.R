@@ -12,7 +12,9 @@
 #' Get a Google token
 #'
 #' @examples{
+#' \dontrun{
 #' gd_auth()
+#' }
 #' }
 #'
 #' @export
@@ -35,13 +37,16 @@ gd_auth <- function() {
 
 #' Get an R Markdown document for practice
 #'
-#'@examples{
+#' @param filename filename
+#'
+#' @examples{
+#' \dontrun{
 #' my_rmd <- gtemplate()
 #' rmarkdown::render(my_rmd)
-#'}
+#' }
+#' }
 #' @export
 gtemplate <- function(filename = "test.Rmd") {
-  template_file <- system.file("rmarkdown", "templates", "gdoc", "skeleton", "test.Rmd", package = "gdoc")
   template_file <- system.file("test.Rmd", package = "gdoc")
   file.copy(template_file, filename)
   filename

@@ -11,7 +11,9 @@ Get a Google token
 }
 \examples{
 {
+\dontrun{
 gd_auth()
+}
 }
 
 }

@@ -6,13 +6,18 @@
 \usage{
 gtemplate(filename = "test.Rmd")
 }
+\arguments{
+\item{filename}{filename}
+}
 \description{
 Get an R Markdown document for practice
 }
 \examples{
 {
+\dontrun{
 my_rmd <- gtemplate()
 rmarkdown::render(my_rmd)
+}
 }
 }
 
