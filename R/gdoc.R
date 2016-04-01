@@ -40,7 +40,7 @@ gtemplate <- function(filename = "test.Rmd") {
 #' @import httr jsonlite rmarkdown stringi
 gdoc <- function(template = NULL, token = gd_auth(),
                  keep_md = FALSE, clean_supporting = TRUE,
-                 verbose = TRUE, browse = TRUE, upload_Rmd = FALSE) {
+                 verbose = TRUE, upload_Rmd = FALSE) {
 
 
   before_knit = function(x) {
@@ -81,12 +81,10 @@ gdoc <- function(template = NULL, token = gd_auth(),
     cat(front_matter, paste(document_body, collapse="\n"), file=input_file_orig)
     editURL = file.path("https://docs.google.com/document/d", rc$id, "edit")
     if(clean_supporting) file.remove(output_file)
-    str(editURL)
+    url_file = paste0(tools::file_path_sans_ext(output_file), ".url")
+    cat(paste0("[InternetShortcut]\nURL=", editURL, "\n"), file=url_file)
     message(editURL)
-    if(browse) browseURL(editURL)
-    # file_id_or_url = upload_to_gdrive (output_file)
-    # result  = attach_property(file_id_or_url, readChar(input_file, file.info(input_file)$size)
-    return(NULL)
+    return(url_file)
   }
 
   output_format(
