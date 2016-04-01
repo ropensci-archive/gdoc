@@ -1,4 +1,4 @@
-Package: googlestuff
+Package: gdoc
 Title: An R Markdown Template for Google Docs
 Version: 0.0.0.9000
 Authors@R: c(

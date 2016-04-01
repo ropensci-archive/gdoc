@@ -17,3 +17,8 @@ Possible useful small exercises
 Gabe Becker has sthg from an intern that does Rmd --> HTML (and maybe back again)?
 
 The one-way design of knitr is a challenge.
+
+
+----
+
+Link to Google Doc with Apps Script attached: https://docs.google.com/document/d/1aiMgZnRX2xW2MD29FJiPOQtJI8FqmNDTr9f-RQzf1pQ/edit?usp=sharing

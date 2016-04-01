@@ -41,7 +41,7 @@ gd_auth <- function() {
 #'}
 #' @export
 gtemplate <- function(filename = "test.Rmd") {
-  template_file <- system.file("test.Rmd", package = "googlestuff")
+  template_file <- system.file("rmarkdown", "templates", "gdoc", "skeleton", "test.Rmd", package = "gdoc")
   file.copy(template_file, filename)
   filename
 }
@@ -63,7 +63,7 @@ gdoc <- function(template = NULL, token = gd_auth(),
 
 
   if (is.null(template)) {
-    template = system.file("template.docx", package = "googlestuff")
+    template = system.file("template.docx", package = "gdoc")
   }
 
   post_processor = function(metadata, input_file, output_file, clean, verbose) {
