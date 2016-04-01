@@ -17,8 +17,20 @@
 #'
 #' @export
 gd_auth <- function() {
-  invisible(httr::oauth2.0_token(httr::oauth_endpoints("google"),
-                                 .app$app, scope = .app$scopes, cache = TRUE))
+  ## I do not understand why these tokens are not refreshable
+  ## so this works for now.
+  if (!file.exists(".httr-oauth") && !interactive()) {
+    stop("Token needed which requires an interactive environment.")
+  }
+  .app$token <-
+    httr::oauth2.0_token(httr::oauth_endpoints("google"),
+                         .app$app, scope = .app$scopes, cache = TRUE)
+  if (!.app$token$validate()) {
+    unlink(".httr-oauth")
+    .app$token <- NULL
+    Recall()
+  }
+  invisible(.app$token)
 }
 
 #' Get an R Markdown document for practice
