@@ -1,10 +1,10 @@
 Package: googlestuff
 Title: An R Markdown Template for Google Docs
 Version: 0.0.0.9000
-Authors@R: Authors@R: c(
+Authors@R: c(
     person("Jennifer", "Bryan", , "jenny@stat.ubc.ca", c("aut", "cre")),
-    person("Noam", "Ross", , "noam.ross@gmail.com", role = c("aut","cre"))
-    person("Nicole", "White", , "nicole.white@neotechnology.com", role= c("aut", "cre")))
+    person("Noam", "Ross", , "noam.ross@gmail.com", role = c("aut")),
+    person("Nicole", "White", , "nicole.white@neotechnology.com", role= c("aut")))
 Description: What the package does (one paragraph).
 URL: https://github.com/ropenscilabs/googlestuff
 BugReports: https://github.com/ropenscilabs/googlestuff/issues
