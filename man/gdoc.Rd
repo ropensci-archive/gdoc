@@ -4,8 +4,8 @@
 \alias{gdoc}
 \title{Create a Google Doc from an R Markdown File}
 \usage{
-gdoc(reference_docx = NULL, token = gd_auth(), keep_md = FALSE,
-  clean_supporting = TRUE)
+gdoc(reference_docx = NULL, token = gd_auth(), browse = NULL,
+  keep_md = FALSE, clean_supporting = TRUE)
 }
 \arguments{
 \item{reference_docx}{Use the specified file as a style reference in
@@ -19,6 +19,9 @@ valid. Otherwise, \code{\link{gd_auth}()} will initiate the browser dance
 to obtain and cache a new token, which requires an \code{interactive()}
 session. \code{\link{gd_auth}()} can be called explicitly to prepare for
 non-\code{interactive()} use, such as via the "Knit" button in RStudio.}
+
+\item{browse}{Logical.  Whether to open the created Google Doc in the
+browser.  Default (NULL) will open only in interactive R sessions.}
 
 \item{keep_md}{Logical.  Whether to retain the knit markdown file.}
 

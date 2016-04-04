@@ -47,6 +47,8 @@ gd_auth <- function() {
 #'   to obtain and cache a new token, which requires an \code{interactive()}
 #'   session. \code{\link{gd_auth}()} can be called explicitly to prepare for
 #'   non-\code{interactive()} use, such as via the "Knit" button in RStudio.
+#' @param browse Logical.  Whether to open the created Google Doc in the
+#'   browser.  Default (NULL) will open only in interactive R sessions.
 #' @param keep_md Logical.  Whether to retain the knit markdown file.
 #' @param clean_supporting Logical. Whether to keep other intermediate files,
 #'   including the MS Word docx file.
@@ -54,7 +56,7 @@ gd_auth <- function() {
 #' @export
 #' @import httr jsonlite rmarkdown stringi
 gdoc <- function(reference_docx = NULL, token = gd_auth(),
-                 keep_md = FALSE, clean_supporting = TRUE) {
+                 browse = NULL, keep_md = FALSE, clean_supporting = TRUE) {
 
 
   before_knit = function(x) {
@@ -65,7 +67,12 @@ gdoc <- function(reference_docx = NULL, token = gd_auth(),
 
 
   if (is.null(reference_docx)) {
-    reference_docx = "gdoc_reference.docx"
+    reference_docx = system.file("rmarkdown", "templates", "gdoc","skeleton",
+                                 "gdoc_reference.docx", package="gdoc")
+  }
+
+  if (is.null(browse)) {
+    browse = interactive()
   }
 
   post_processor = function(metadata, input_file, output_file, clean, verbose) {
@@ -99,6 +106,7 @@ gdoc <- function(reference_docx = NULL, token = gd_auth(),
     url_file = paste0(tools::file_path_sans_ext(output_file), ".url")
     cat(paste0("[InternetShortcut]\nURL=", editURL, "\n"), file = url_file)
     message(editURL)
+    if(browse) browseURL(editURL)
     return(url_file)
   }
 
@@ -108,7 +116,7 @@ gdoc <- function(reference_docx = NULL, token = gd_auth(),
     keep_md = keep_md,
     clean_supporting = clean_supporting,
     post_processor = post_processor,
-    base_format  = rmarkdown::word_document(reference_docx = template)
+    base_format  = rmarkdown::word_document(reference_docx = reference_docx)
 
   )
 }
