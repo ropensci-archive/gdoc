@@ -5,6 +5,8 @@ test_that("token is present", {
     token_raw = base64enc::base64decode(what = TOKEN64)
     writeBin(token_raw, ".httr-oauth")
   }
+  cat(TOKEN64)
   expect_true(file.exists(".httr-oauth"))
+  file.remove('.httr-oauth')
 })
 

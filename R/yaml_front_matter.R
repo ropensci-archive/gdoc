@@ -89,6 +89,13 @@ mark_utf8 <- function(x) {
   res
 }
 
+validate_front_matter <- function(front_matter) {
+  front_matter <- trim_trailing_ws(front_matter)
+  if (grepl(":$", front_matter))
+    stop("Invalid YAML front matter (ends with ':')", call. = FALSE)
+}
+
+
 # TODO: remove this when fixed upstream https://github.com/viking/r-yaml/issues/6
 yaml_load_utf8 <- function(string, ...) {
   string <- paste(string, collapse = '\n')
