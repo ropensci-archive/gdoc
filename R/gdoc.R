@@ -55,18 +55,21 @@ gtemplate <- function(filename = "test.Rmd") {
 
 #' Create a Google Doc from an R Markdown File
 #'
-#' @param token Google Auth token. \code{\link{gd_auth}} will generate one by
-#' default
-#' @param keep_md Boolean.  Whether to retain the knit markdown file
-#' @param clean_supporting Boolean. Whether to keep other intermediate files,
-#' including the MS Word file.
 #' @param reference_docx Use the specified file as a style reference in
 #'   producing an intermediate MS Word docx file. For best results, the
 #'   reference docx should be a modified version of a docx file produced using
 #'   pandoc. `NULL` requests the default reference docx built into the package.
+#' @param token Google OAuth2 token. \code{\link{gd_auth}()} will load a
+#'   previously cached token from \code{.httr-oauth}, if available and still
+#'   valid. Otherwise, \code{\link{gd_auth}()} will initiate the browser dance
+#'   to obtain and cache a new token, which requires an \code{interactive()}
+#'   session. \code{\link{gd_auth}()} can be called explicitly to prepare for
+#'   non-\code{interactive()} use, such as via the "Knit" button in RStudio.
+#' @param keep_md Logical.  Whether to retain the knit markdown file.
+#' @param clean_supporting Logical. Whether to keep other intermediate files,
+#'   including the MS Word docx file.
 #'
 #' @export
-#' @import httr jsonlite rmarkdown stringi
 gdoc <- function(reference_docx = NULL, token = gd_auth(),
                  keep_md = FALSE, clean_supporting = TRUE) {
 
@@ -74,7 +77,7 @@ gdoc <- function(reference_docx = NULL, token = gd_auth(),
   before_knit = function(x) {
     message("Validating Token")
     stopifnot(token$validate())
-    return(x)
+    x
   }
 
 
@@ -83,7 +86,7 @@ gdoc <- function(reference_docx = NULL, token = gd_auth(),
   }
 
   post_processor = function(metadata, input_file, output_file, clean, verbose) {
-    if(is.null(metadata$title)) {
+    if (is.null(metadata$title)) {
       title = "Test"
     } else {
       title = metadata$title
@@ -106,22 +109,23 @@ gdoc <- function(reference_docx = NULL, token = gd_auth(),
                           "---\n"
     )
 
-    cat(front_matter, paste(document_body, collapse="\n"), file=input_file_orig)
+    cat(front_matter, paste(document_body, collapse = "\n"),
+        file = input_file_orig)
     editURL = file.path("https://docs.google.com/document/d", rc$id, "edit")
-    if(clean_supporting) file.remove(output_file)
+    if (clean_supporting) file.remove(output_file)
     url_file = paste0(tools::file_path_sans_ext(output_file), ".url")
-    cat(paste0("[InternetShortcut]\nURL=", editURL, "\n"), file=url_file)
+    cat(paste0("[InternetShortcut]\nURL=", editURL, "\n"), file = url_file)
     message(editURL)
     return(url_file)
   }
 
-  output_format(
-    knitr = knitr_options(knit_hooks=list(document=before_knit)),
-    pandoc = pandoc_options(to = "docx"),
+  rmarkdown::output_format(
+    knitr = rmarkdown::knitr_options(knit_hooks = list(document = before_knit)),
+    pandoc = rmarkdown::pandoc_options(to = "docx"),
     keep_md = keep_md,
     clean_supporting = clean_supporting,
     post_processor = post_processor,
-    base_format  = word_document(reference_docx = template)
+    base_format  = rmarkdown::word_document(reference_docx = template)
   )
 }
 

@@ -4,20 +4,26 @@
 \alias{gdoc}
 \title{Create a Google Doc from an R Markdown File}
 \usage{
-gdoc(template = NULL, token = gd_auth(), keep_md = FALSE,
+gdoc(reference_docx = NULL, token = gd_auth(), keep_md = FALSE,
   clean_supporting = TRUE)
 }
 \arguments{
-\item{template}{An MS word file with styles for your document.  NULL uses
-package defaults}
+\item{reference_docx}{Use the specified file as a style reference in
+producing an intermediate MS Word docx file. For best results, the
+reference docx should be a modified version of a docx file produced using
+pandoc. `NULL` requests the default reference docx built into the package.}
 
-\item{token}{Google Auth token. \code{\link{gd_auth}} will generate one by
-default}
+\item{token}{Google OAuth2 token. \code{\link{gd_auth}()} will load a
+previously cached token from \code{.httr-oauth}, if available and still
+valid. Otherwise, \code{\link{gd_auth}()} will initiate the browser dance
+to obtain and cache a new token, which requires an \code{interactive()}
+session. \code{\link{gd_auth}()} can be called explicitly to prepare for
+non-\code{interactive()} use, such as via the "Knit" button in RStudio.}
 
-\item{keep_md}{Boolean.  Whether to retain the knit markdown file}
+\item{keep_md}{Logical.  Whether to retain the knit markdown file.}
 
-\item{clean_supporting}{Boolean. Whether to keep other intermediate files,
-including the MS Word file.}
+\item{clean_supporting}{Logical. Whether to keep other intermediate files,
+including the MS Word docx file.}
 }
 \description{
 Create a Google Doc from an R Markdown File
