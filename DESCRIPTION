@@ -18,4 +18,8 @@ Imports:
     rmarkdown,
     stringi,
     yaml
+Suggests:
+    testthat,
+    base64enc
 RoxygenNote: 5.0.1
+Suggests: testthat
