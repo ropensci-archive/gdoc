@@ -35,24 +35,6 @@ gd_auth <- function() {
   invisible(.app$token)
 }
 
-#' Get an R Markdown document for practice
-#'
-#' @param filename filename
-#'
-#' @examples{
-#' \dontrun{
-#' my_rmd <- gtemplate()
-#' rmarkdown::render(my_rmd)
-#' }
-#' }
-#' @export
-gtemplate <- function(filename = "test.Rmd") {
-  template_file <- system.file("test.Rmd", package = "gdoc")
-  file.copy(template_file, filename)
-  filename
-}
-
-
 #' Create a Google Doc from an R Markdown File
 #'
 #' @param reference_docx Use the specified file as a style reference in

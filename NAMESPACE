@@ -2,4 +2,7 @@
 
 export(gd_auth)
 export(gdoc)
-export(gtemplate)
+import(httr)
+import(jsonlite)
+import(rmarkdown)
+import(stringi)
