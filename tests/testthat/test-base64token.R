@@ -1,7 +1,7 @@
-AUTH64 = Sys.getenv("AUTH64")
+TOKEN64 = Sys.getenv("AUTH64")
 
-if(AUTH64 != "") {
-  base64decode(AUTH64, output = ".httr-oauth")
+if(TOKEN64 != "") {
+  base64decode(TOKEN64, output = ".httr-oauth")
 }
 
 test_that("token is present", {
