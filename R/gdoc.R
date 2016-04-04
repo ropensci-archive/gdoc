@@ -91,8 +91,8 @@ gdoc <- function(reference_docx = NULL, token = gd_auth(),
     rc <- jsonlite::fromJSON(httr::content(req, as = "text", encoding = "UTF-8"))
 
     input_file_orig = stringi::stri_replace_all_fixed(input_file, "utf8.md", "Rmd")
-    document_body = rmarkdown:::partition_yaml_front_matter(readLines(input_file_orig))$body
-    front_matter = rmarkdown:::parse_yaml_front_matter(readLines(input_file_orig))
+    document_body = partition_yaml_front_matter(readLines(input_file_orig))$body
+    front_matter = parse_yaml_front_matter(readLines(input_file_orig))
     front_matter$gdoc_id = rc$id
     front_matter = paste0("---\n",
                           yaml::as.yaml(front_matter),
