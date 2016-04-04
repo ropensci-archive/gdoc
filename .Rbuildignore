@@ -2,3 +2,6 @@
 ^\.Rproj\.user$
 ^\.httr-oauth$
 ^\NOTES\.md$
+test.docx
+test.Rmd
+test.url
