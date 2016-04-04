@@ -2,6 +2,8 @@
 ^\.Rproj\.user$
 ^\.httr-oauth$
 ^\NOTES\.md$
+^\.travis\.yml$
+^appveyor\.yml$
 test.docx
 test.Rmd
 test.url
