@@ -30,6 +30,12 @@ validate_front_matter <- function(front_matter) {
 }
 
 
+is_blank <- function (x)
+{
+  if (length(x))
+    all(grepl("^\\s*$", x))
+  else TRUE
+}
 
 partition_yaml_front_matter <- function(input_lines) {
 
