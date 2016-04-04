@@ -1,3 +1,4 @@
 name: R Google Doc
 description: >
-  Example template for R Google Docs
+  Example template for R Google Docs.  Contains a reference MS Word .docx file
+  to define styles.

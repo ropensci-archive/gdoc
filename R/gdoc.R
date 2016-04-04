@@ -52,6 +52,7 @@ gd_auth <- function() {
 #'   including the MS Word docx file.
 #'
 #' @export
+#' @import httr jsonlite rmarkdown stringi
 gdoc <- function(reference_docx = NULL, token = gd_auth(),
                  keep_md = FALSE, clean_supporting = TRUE) {
 
@@ -64,7 +65,7 @@ gdoc <- function(reference_docx = NULL, token = gd_auth(),
 
 
   if (is.null(reference_docx)) {
-    template = system.file("reference.docx", package = "gdoc")
+    reference_docx = "gdoc_reference.docx"
   }
 
   post_processor = function(metadata, input_file, output_file, clean, verbose) {
@@ -108,6 +109,7 @@ gdoc <- function(reference_docx = NULL, token = gd_auth(),
     clean_supporting = clean_supporting,
     post_processor = post_processor,
     base_format  = rmarkdown::word_document(reference_docx = template)
+
   )
 }
 
