@@ -5,6 +5,9 @@ r:
 sudo: false
 cache: packages
 
+r_binary_packages:
+  - stringi
+
 r_github_packages:
   - jimhester/covr
 #  - jimhester/lintr
