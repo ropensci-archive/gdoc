@@ -106,7 +106,7 @@ gdoc <- function(reference_docx = NULL, token = gd_auth(),
     url_file = paste0(tools::file_path_sans_ext(output_file), ".url")
     cat(paste0("[InternetShortcut]\nURL=", editURL, "\n"), file = url_file)
     message(editURL)
-    if(browse) browseURL(editURL)
+    if(browse) utils::browseURL(editURL)
     return(url_file)
   }
 
