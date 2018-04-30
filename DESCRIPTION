@@ -20,6 +20,6 @@ Imports:
     yaml
 Suggests:
     testthat,
-    base64enc
+    base64enc,
+    testthat
 RoxygenNote: 5.0.1
-Suggests: testthat
