@@ -6,3 +6,5 @@
 This package contained an R Markdown template for compiling and uploading `.Rmd`
 files to Google Docs.  It was an experiment produced at the
 [ROpenSci 2016 Unconf](https://github.com/ropensci/unconf16/issues/9).
+
+You might be interested in the [`markdrive` package](https://github.com/MilesMcBain/markdrive) that helps editing Google docs in Markdown with a little help from R.
